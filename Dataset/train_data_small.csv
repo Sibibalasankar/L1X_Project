@@ -1,0 +1,31 @@
+code,label
+"contract ReentrancyExample { mapping(address => uint) public balances; function withdraw(uint _amount) public { require(balances[msg.sender] >= _amount); (bool sent,) = msg.sender.call{value: _amount}(""""); require(sent, ""Failed to send Ether""); balances[msg.sender] -= _amount; } }",reentrancy
+"contract ReentrancyAttack { function attack(address victim) public { victim.call(abi.encodeWithSignature(""withdraw(uint256)"", 1 ether)); } }",reentrancy
+contract InsecureBank { mapping(address => uint) balances; function withdraw(uint amount) public { if (balances[msg.sender] >= amount) { msg.sender.call{value: amount}(); balances[msg.sender] -= amount; } } },reentrancy
+contract OverflowExample { uint8 public count = 255; function increment() public { count += 1; } },integer_overflow
+"contract Token { mapping(address => uint256) public balances; function transfer(address to, uint256 amount) public { balances[msg.sender] -= amount; balances[to] += amount; } }",integer_overflow
+"contract AddTest { function add(uint a, uint b) public pure returns(uint) { return a + b; } }",integer_overflow
+"contract UncheckedCall { function sendEther(address payable _to) public { _to.call{value: 1 ether}(""""); } }",unchecked_external_call
+"contract Example { function pay() public { msg.sender.call(""buy()""); } }",unchecked_external_call
+"contract Unsafe { function trigger() public { address(msg.sender).call(""someFunc()""); } }",unchecked_external_call
+contract Lottery { function isWinner() public view returns (bool) { return block.timestamp % 2 == 0; } },timestamp_dependency
+contract Gamble { function gamble() public { if (block.timestamp % 10 == 0) { payable(msg.sender).transfer(1 ether); } } },timestamp_dependency
+contract Bonus { function getBonus() public view returns (uint) { return block.timestamp; } },timestamp_dependency
+contract PredictableBlock { function lucky() public view returns (bool) { return block.number % 5 == 0; } },block_number_dependency
+contract TimeGame { function win() public view returns (bool) { return block.number % 2 == 0; } },block_number_dependency
+contract DiceRoll { function roll() public view returns (uint) { return block.number % 6; } },block_number_dependency
+contract Proxy { address public impl; fallback() external payable { impl.delegatecall(msg.data); } },dangerous_delegatecall
+"contract UnsafeDelegate { function execute(address target, bytes memory data) public { target.delegatecall(data); } }",dangerous_delegatecall
+contract Executor { function run(bytes memory data) public { address(0x123).delegatecall(data); } },dangerous_delegatecall
+contract Locked { function() external payable {} },ether_frozen
+contract NoWithdraw { receive() external payable {} },ether_frozen
+contract Trap { function trap() public payable {} },ether_frozen
+contract EqualityCheck { function check() public view returns (bool) { return msg.value == 1 ether; } },strict_equality
+contract Equalizer { function exactPay() public payable { require(msg.value == 0.5 ether); } },strict_equality
+contract Limit { function pay() public payable { require(msg.value == 1000000000000000000); } },strict_equality
+contract Killable { function destroy() public { selfdestruct(payable(msg.sender)); } },unprotected_selfdestruct
+contract Suicide { function boom() public { selfdestruct(msg.sender); } },unprotected_selfdestruct
+contract SelfDestruct { function remove() public { address payable a = payable(msg.sender); selfdestruct(a); } },unprotected_selfdestruct
+contract AdminOnly { address public admin; function changeOwner(address newAdmin) public { admin = newAdmin; } },access_control
+contract Config { address owner; function setConfig() public { /* no check */ } },access_control
+contract Sensitive { function setPrice(uint price) public { /* no restriction */ } },access_control
