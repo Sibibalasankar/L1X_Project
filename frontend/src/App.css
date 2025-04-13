@@ -140,9 +140,10 @@ body {
 }
 
 .code-section:hover, .results-section:hover {
-  transform: translateY(-5px) rotateX(2deg);
+  transform: translateY(-5px); /* No rotate */
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
+
 
 .section-header {
   display: flex;
@@ -518,4 +519,113 @@ body.dark-mode {
   .code-input {
     min-height: 300px;
   }
+}
+
+.vulnerability-details {
+  background-color: #f9f9fc;
+  border-radius: 10px;
+  padding: 16px;
+  margin-top: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.detail-item {
+  margin-bottom: 8px;
+}
+
+.secure-example {
+  white-space: pre-wrap; /* wrap long lines instead of forcing scroll */
+  word-wrap: break-word; /* break long strings */
+  background-color: #f0f0f5;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+
+.container {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+
+
+.dark-mode .vulnerability-details {
+  background-color: #1e1e2a;
+  color: #f0f0f0;
+  border: 1px solid #333;
+}
+
+.vulnerability-details h3 {
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  color: #3b3b98;
+}
+
+.dark-mode .vulnerability-details h3 {
+  color: #9fd3c7;
+}
+
+
+
+.detail-item p {
+  margin: 6px 0 0;
+  line-height: 1.6;
+}
+
+
+.dark-mode .secure-example {
+  background-color: #2e2e42;
+  color: #d1d1e0;
+  border: 1px dashed #555;
+}
+
+.score-bar-container {
+  position: relative;
+  height: 10px;
+  background-color: #ddd;
+  border-radius: 5px;
+  margin-top: 4px;
+  overflow: visible; /* Important for tooltip visibility */
+}
+
+.score-bar {
+  height: 100%;
+  background-color: #4caf50;
+  transition: width 0.3s ease-in-out;
+}
+
+/* Tooltip styles */
+.tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  background-color: #333;
+  color: #fff;
+  font-size: 0.75rem;
+  text-align: center;
+  border-radius: 6px;
+  padding: 6px 10px;
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 10;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.score-bar-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+.tooltip-text {
+  transform: translateZ(0); /* Force hardware layer */
+  will-change: transform;
+  z-index: 999;
 }

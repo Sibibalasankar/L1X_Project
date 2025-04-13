@@ -47,6 +47,13 @@ function App() {
       setIsAnalyzing(false);
     }
   };
+  const vulnerabilityExplanations = {
+    Reentrancy: "This score reflects detected patterns of unguarded external calls or recursive function behavior.",
+    IntegerOverflow: "High score due to absence of SafeMath or input validation.",
+    UncheckedCall: "Score is based on the use of low-level calls without return value handling.",
+    // Add more mappings as needed
+  };
+  
 
   return (
     <div className={`analyzer-container ${darkMode ? 'dark-mode' : ''}`}>
@@ -54,10 +61,10 @@ function App() {
         <div className="header-content">
           <h1>Solidity Vulnerability Analyzer</h1>
           <p className="subtitle">
-            Paste your Solidity contract below to detect potential vulnerabilities 
+            Paste your Solidity contract below to detect potential vulnerabilities
           </p>
         </div>
-        <button 
+        <button
           className="dark-mode-toggle"
           onClick={toggleDarkMode}
           aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -79,8 +86,8 @@ function App() {
             value={code}
             onChange={(e) => setCode(e.target.value)}
           />
-          <button 
-            className="analyze-btn" 
+          <button
+            className="analyze-btn"
             onClick={analyzeCode}
             disabled={isAnalyzing}
           >
@@ -94,7 +101,7 @@ function App() {
             <FiAlertTriangle className="icon" />
             <h2>Analysis Results</h2>
           </div>
-          
+
           {error && (
             <div className="error-message">
               {error}
@@ -110,9 +117,8 @@ function App() {
             <div className="results-content">
               <div className="prediction-section">
                 <h3>Predicted Vulnerability</h3>
-                <div className={`prediction-tag ${
-                  results.prediction === 'Safe' ? 'safe' : 'vulnerable'
-                }`}>
+                <div className={`prediction-tag ${results.prediction === 'Safe' ? 'safe' : 'vulnerable'
+                  }`}>
                   {results.prediction}
                   <span className="confidence-percentage">
                     ({Math.max(...Object.values(results.confidence_scores)) * 100}% confidence)
@@ -120,32 +126,58 @@ function App() {
                 </div>
               </div>
 
+              {results && results.vulnerability_details && (
+                <div className="vulnerability-details">
+                  <h3>🛡️ Vulnerability Details</h3>
+                  <div className="detail-item">
+                    <strong>Severity:</strong> {results.vulnerability_details.severity}
+                  </div>
+                  <div className="detail-item">
+                    <strong>CWE ID:</strong> {results.vulnerability_details.cwe_id}
+                  </div>
+                  <div className="detail-item">
+                    <strong>Description:</strong>
+                    <p>{results.vulnerability_details.description}</p>
+                  </div>
+                  <div className="detail-item">
+                    <strong>Secure Example:</strong>
+                    <pre className="secure-example">
+                      {results.vulnerability_details.secure_example}
+                    </pre>
+                  </div>
+                </div>
+              )}
+
+
               <div className="confidence-section">
                 <h3>Confidence Scores</h3>
                 <div className="confidence-grid">
                   {Object.entries(results.confidence_scores).map(([vuln, score]) => (
                     <div key={vuln} className="confidence-item">
-                      <div className="vulnerability-name">
-                        {vuln} 
-                        <span className="percentage-badge">{(score * 100).toFixed(1)}%</span>
-                      </div>
-                      <div className="score-bar-container">
-                        <div 
-                          className="score-bar"
-                          style={{ width: `${score * 100}%` }}
-                        ></div>
+                    <div className="vulnerability-name">
+                      {vuln}
+                      <span className="percentage-badge">{(score * 100).toFixed(1)}%</span>
+                    </div>
+                    <div className="score-bar-container">
+                      <div className="score-bar" style={{ width: `${score * 100}%` }}></div>
+                      <div className="tooltip-text">
+                        {results.vulnerability_details?.tooltip_info?.[vuln] || `Details about ${vuln}`}
                       </div>
                     </div>
+                  </div>
+                  
                   ))}
                 </div>
               </div>
             </div>
+
           ) : (
             <div className="empty-state">
               <p>Results will appear here after analysis</p>
             </div>
           )}
         </div>
+
       </div>
 
       <footer className="analyzer-footer">
