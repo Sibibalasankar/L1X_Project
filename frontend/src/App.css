@@ -36,6 +36,12 @@
   50% { transform: translateY(-5px); }
 }
 
+@keyframes walletPulse {
+  0% { box-shadow: 0 0 0 0 rgba(6, 214, 160, 0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(6, 214, 160, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(6, 214, 160, 0); }
+}
+
 /* Base Styles */
 :root {
   --primary-color: #3a86ff;
@@ -98,13 +104,24 @@ body {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
   position: relative;
   transition: all 0.3s;
-  animation: fadeIn 0.8s ease-out, pulse 3s ease-in-out infinite;
+  /* animation: fadeIn 0.8s ease-out, pulse 3s ease-in-out infinite; */
   transform-origin: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .header-content {
   max-width: 800px;
   margin: 0 auto;
+  order: 1;
+}
+
+.header-actions {
+  order: 2;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
 }
 
 .analyzer-header h1 {
@@ -126,6 +143,66 @@ body {
   transition: color 0.3s;
 }
 
+/* Wallet Button */
+.wallet-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(58, 134, 255, 0.1);
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.wallet-btn:hover {
+  background: rgba(58, 134, 255, 0.2);
+  transform: translateY(-2px);
+}
+
+.wallet-btn.connected {
+  background: rgba(6, 214, 160, 0.1);
+  color: var(--success-color);
+  border-color: var(--success-color);
+  animation: walletPulse 1.5s ease-out;
+}
+
+.wallet-btn.connected:hover {
+  background: rgba(6, 214, 160, 0.2);
+}
+
+/* Dark Mode Toggle */
+.dark-mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--bg-gradient);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  background-size: 200% auto;
+  animation: gradientShift 4s ease infinite;
+}
+
+.dark-mode-toggle:hover {
+  transform: translateY(-2px) rotate(5deg);
+}
+
+.dark-mode-toggle:active {
+  animation: bounce 0.4s ease;
+}
+
+.toggle-icon {
+  font-size: 1.2rem;
+}
+
 /* Sections */
 .code-section, .results-section {
   background: white;
@@ -139,11 +216,11 @@ body {
   transform-style: preserve-3d;
 }
 
+
 .code-section:hover, .results-section:hover {
-  transform: translateY(-5px); /* No rotate */
+  transform: translateY(-5px);
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
-
 
 .section-header {
   display: flex;
@@ -189,6 +266,12 @@ body {
 }
 
 /* Buttons */
+.input-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
 .analyze-btn {
   display: flex;
   align-items: center;
@@ -205,6 +288,7 @@ body {
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   background-size: 200% auto;
   animation: gradientShift 4s ease infinite;
+  flex: 1;
 }
 
 .analyze-btn:hover {
@@ -220,37 +304,26 @@ body {
   animation: none;
 }
 
-.btn-icon {
-  font-size: 1.1rem;
-}
-
-/* Dark Mode Toggle */
-.dark-mode-toggle {
-  position: absolute;
-  top: 2rem;
-  right: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: var(--bg-gradient);
+.upload-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: #4a5568;
   color: white;
   border: none;
-  border-radius: 20px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+  flex: 1;
 }
 
-.dark-mode-toggle:hover {
-  transform: translateY(-2px) rotate(5deg);
+.upload-btn:hover {
+  background-color: #2d3748;
 }
 
-.dark-mode-toggle:active {
-  animation: bounce 0.4s ease;
-}
-
-.toggle-icon {
-  font-size: 1.2rem;
+.btn-icon {
+  font-size: 1.1rem;
 }
 
 /* Results */
@@ -396,7 +469,7 @@ body {
 }
 
 .score-bar-container {
-  height: 30px;
+  height: 10px;
   background-color: #e9ecef;
   border-radius: 15px;
   position: relative;
@@ -413,6 +486,33 @@ body {
 
 .score-bar:hover {
   filter: brightness(1.1);
+}
+
+/* Tooltip styles */
+.tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  background-color: #333;
+  color: #fff;
+  font-size: 0.75rem;
+  text-align: center;
+  border-radius: 6px;
+  padding: 6px 10px;
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  z-index: 10;
+  transition: opacity 0.3s ease-in-out;
+  transform: translateZ(0);
+  will-change: transform;
+  z-index: 999;
+}
+
+.score-bar-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
 
 /* Footer */
@@ -488,39 +588,23 @@ body.dark-mode {
   color: #a0c4ff;
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-  .analyzer-container {
-    padding: 1rem;
-  }
-  
-  .content-grid {
-    gap: 1.5rem;
-  }
-  
-  .code-section, .results-section {
-    padding: 1.5rem;
-  }
-  
-  .dark-mode-toggle {
-    position: static;
-    margin: 1rem auto 0;
-    width: fit-content;
-  }
-  
-  .analyzer-header {
-    padding: 1.5rem;
-  }
-  
-  .analyzer-header h1 {
-    font-size: 2rem;
-  }
-  
-  .code-input {
-    min-height: 300px;
-  }
+.dark-mode .wallet-btn {
+  background: rgba(58, 134, 255, 0.2);
 }
 
+.dark-mode .wallet-btn.connected {
+  background: rgba(6, 214, 160, 0.2);
+}
+
+.dark-mode .upload-btn {
+  background-color: #3a3a4a;
+}
+
+.dark-mode .upload-btn:hover {
+  background-color: #2a2a3a;
+}
+
+/* Vulnerability Details */
 .vulnerability-details {
   background-color: #f9f9fc;
   border-radius: 10px;
@@ -532,12 +616,12 @@ body.dark-mode {
 }
 
 .detail-item {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .secure-example {
-  white-space: pre-wrap; /* wrap long lines instead of forcing scroll */
-  word-wrap: break-word; /* break long strings */
+  white-space: pre-wrap;
+  word-wrap: break-word;
   background-color: #f0f0f5;
   padding: 10px;
   border-radius: 6px;
@@ -546,15 +630,8 @@ body.dark-mode {
   overflow-y: auto;
   overflow-x: hidden;
   font-family: 'Courier New', Courier, monospace;
+  margin-top: 15px;
 }
-
-
-.container {
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-
 
 .dark-mode .vulnerability-details {
   background-color: #1e1e2a;
@@ -572,13 +649,10 @@ body.dark-mode {
   color: #9fd3c7;
 }
 
-
-
 .detail-item p {
   margin: 6px 0 0;
   line-height: 1.6;
 }
-
 
 .dark-mode .secure-example {
   background-color: #2e2e42;
@@ -586,46 +660,75 @@ body.dark-mode {
   border: 1px dashed #555;
 }
 
-.score-bar-container {
-  position: relative;
-  height: 10px;
-  background-color: #ddd;
-  border-radius: 5px;
-  margin-top: 4px;
-  overflow: visible; /* Important for tooltip visibility */
+/* Responsive adjustments */
+@media (min-width: 1024px) {
+  .analyzer-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    padding: 1.5rem 2rem;
+  }
+  
+  .header-content {
+    margin: 0;
+    text-align: left;
+    order: 1;
+  }
+  
+  .header-actions {
+    order: 2;
+    margin-top: 0;
+  }
 }
 
-.score-bar {
-  height: 100%;
-  background-color: #4caf50;
-  transition: width 0.3s ease-in-out;
+@media (max-width: 768px) {
+  .analyzer-container {
+    padding: 1rem;
+  }
+  
+  .content-grid {
+    gap: 1.5rem;
+  }
+  
+  .code-section, .results-section {
+    padding: 1.5rem;
+  }
+  
+  .analyzer-header {
+    padding: 1.5rem;
+  }
+  
+  .analyzer-header h1 {
+    font-size: 2rem;
+  }
+  
+  .code-input {
+    min-height: 300px;
+  }
 }
 
-/* Tooltip styles */
-.tooltip-text {
-  visibility: hidden;
-  opacity: 0;
-  background-color: #333;
-  color: #fff;
-  font-size: 0.75rem;
-  text-align: center;
-  border-radius: 6px;
-  padding: 6px 10px;
-  position: absolute;
-  bottom: 120%;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  z-index: 10;
-  transition: opacity 0.3s ease-in-out;
+@media (max-width: 480px) {
+  .header-actions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .wallet-btn,
+  .dark-mode-toggle {
+    width: 100%;
+  }
+  
+  .input-actions {
+    flex-direction: column;
+  }
+  
+  .upload-btn,
+  .analyze-btn {
+    width: 100%;
+  }
 }
 
-.score-bar-container:hover .tooltip-text {
-  visibility: visible;
-  opacity: 1;
-}
-.tooltip-text {
-  transform: translateZ(0); /* Force hardware layer */
-  will-change: transform;
-  z-index: 999;
+.theme_button{
+ margin-right: 0%;
 }
