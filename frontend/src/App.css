@@ -78,6 +78,8 @@ body {
   margin: 0 auto;
   padding: 2rem;
   animation: fadeIn 0.6s ease-out;
+  height: fit-content;
+  overflow-x: hidden;
 }
 
 .content-grid {
@@ -214,6 +216,10 @@ body {
   flex-direction: column;
   transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   transform-style: preserve-3d;
+}
+.code-section{
+  height: fit-content;
+
 }
 
 
